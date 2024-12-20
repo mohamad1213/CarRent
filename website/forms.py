@@ -7,6 +7,11 @@ from django import forms
 
 from .models import *
 
+class ContactMessageForm(forms.ModelForm):
+    class Meta:
+        model = ContactMessage
+        fields = ['name', 'email', 'phone_number', 'message']
+
 
 class createUserForm(UserCreationForm):
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'********'}))

@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.forms import UserCreationForm
 from datetime import datetime, timedelta, date
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib import messages
 from django.db.models import Count, Sum, Max
@@ -99,21 +99,19 @@ def loadForm(request):
 
 
 def carPage(request,pk):
-    current  = request.user
-    carpage= Car.objects.get(id=pk)
-    if request.method  == 'POST':
-        message_name    =   request.POST['name'] +' '   + " "+request.POST['number']
-        message_email   =   request.POST['email']
-        message   =   request.POST['message']
-        send_mail(
-            message_name,
-            message,
-            message_email,
-            ['testerprojectsdjango@gmail.com'],
-            fail_silently=False
-        )
-    context = {'carpage':carpage,'current':current}
-    return render(request,'car.html',context)
+    carpage = get_object_or_404(Car, id=pk)
+    
+    if request.method == 'POST':
+        form = ContactMessageForm(request.POST)
+        if form.is_valid():
+            contact_message = form.save(commit=False)
+            contact_message.car = carpage
+            contact_message.save()
+            return render(request, 'car.html', {'carpage': carpage, 'form': ContactMessageForm(), 'success': True})
+    else:
+        form = ContactMessageForm()
+    
+    return render(request, 'car.html', {'carpage': carpage, 'form': form})
 
 
 @login_required(login_url='home.html')
@@ -276,23 +274,23 @@ def cancelOrder(request,pk):
    
     return redirect ('home')
 
+
 def gallery(request):
-    picList = ['car1','car3','car5']
+    picList = ['car1', 'car3', 'car5']
     pictureList = []
-    
+
     for x in picList:
-        photo = Car.objects.values_list(x)
-        pictureList.append(photo)
+        photo = Car.objects.values_list(x, flat=True)  # Use `flat=True` to simplify list structure
+        pictureList.extend(photo)
 
-    
-    
-    data = list(itertools.chain(*pictureList)) 
-    data = list(itertools.chain(*data)) 
-    data = list(filter(None, data))
-    
-  
+    # Filter out None values and reverse the order
+    data = list(filter(None, pictureList))[::-1]
+
+    # Define a default `current` object (e.g., the first Car object or another logic)
+    current = Car.objects.first()  # Replace `.first()` with your desired logic to fetch the `current` car
+
     context = {
-        'data':data[::-1]
+        'data': data,
+        'current': current,  # Pass `current` to the template
     }
-
     return render ( request, 'gallery.html', context)

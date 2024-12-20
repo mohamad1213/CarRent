@@ -3,7 +3,6 @@
 {% block content %}
 
     <div class="wrapper">
-        <!---
             <div class="nav-dots">
                 <div class="nav-dot" data-slide="1">
                     <div class="buttonText">GT</div>
@@ -18,7 +17,6 @@
                     <div class="buttonText">C63</div>
                 </div>
             </div>
-            --->
             
             {% for car in cars  %}
             <div class="panel" data-slide="{{ car.id }}">
@@ -95,6 +93,7 @@
                             <div class="car2">
                                 <div class="car2Wrapper">
                                     <div class="car2Data">
+                                        <h1>{{ car.car3.url }}</h1>
                                         <img src="{{ car.car3.url }}" class="img-responsive"alt="">
                                     </div>
                                 </div>

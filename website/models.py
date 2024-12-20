@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# Create your models here.
-
 class Year(models.Model):
     name = models.CharField(max_length=4,unique=True)
 
@@ -25,11 +23,11 @@ class Car(models.Model):
     price      = models.CharField(max_length=10,null=True,blank=True)
     insurance  = models.IntegerField(null=True,blank=True)
     tank       = models.IntegerField(null=True,blank=True)
-    car1       = models.ImageField(null=True)
-    car2       = models.ImageField(null=True)
-    car3       = models.ImageField(null=True)
-    car4       = models.ImageField(null=True)
-    car5       = models.ImageField(null=True)
+    car1 = models.ImageField(null=True, blank=True)
+    car2 = models.ImageField(null=True, blank=True)
+    car3 = models.ImageField(null=True, blank=True)
+    car4 = models.ImageField(null=True, blank=True)
+    car5 = models.ImageField(null=True, blank=True)
     
     
     
@@ -102,3 +100,15 @@ class canceledOrders(models.Model):
     price        = models.IntegerField(null=True,blank=False)
     payed        = models.BooleanField( null=True, default=False)
    
+
+
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    message = models.TextField()
+    car = models.ForeignKey('Car', on_delete=models.SET_NULL, null=True)  # Hubungkan dengan mobil tertentu
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.email}"

@@ -8,25 +8,25 @@ urlpatterns = [
 	path('', views.home, name='home'),
 	path('loadForm/', views.loadForm, name='ajax_load'),
     path('infoGenerated/', views.loadData, name='infoGenerated'),
-	path('carinfo/<str:pk>/',views.carPage, name='carPage'),
+	path('carinfo/<int:pk>/',views.carPage, name='carPage'),
 	path('gallery',views.gallery, name='gallery'),
 
 
 	path('register/', views.registerPage, name='register'),
 	path('logout/',views.logoutPage, name='logout'),
-	path('customer/<str:pk>/',views.customerPage, name='customer'),
+	path('customer/<pk>/',views.customerPage, name='customer'),
 	path('updateView/',views.updateView, name='updateView'),
 	
 
 
-	path('createOrder/<str:pk>/',views.createOrder, name='createOrder'),
-	path('makeOrder/<str:pk>/',views.makeOrder, name='makeOrder'),
-	path('payment/<str:pk>/', views.payment, name='payment'),
-	path('cancelOrder/<str:pk>/', views.cancelOrder, name='cancelOrder'),
+	path('createOrder/<int:pk>/',views.createOrder, name='createOrder'),
+	path('makeOrder/<int:pk>/',views.makeOrder, name='makeOrder'),
+	path('payment/<int:pk>/', views.payment, name='payment'),
+	path('cancelOrder/<int:pk>/', views.cancelOrder, name='cancelOrder'),
 
 
-	path('pdfView/<str:pk>/', utilitiesViews.ViewPDF.as_view(), name="pdfView"),
-    path('pdfDownload/<str:pk>/', utilitiesViews.DownloadPDF.as_view(), name="pdfDownload"),
+	path('pdfView/<int:pk>/', utilitiesViews.ViewPDF.as_view(), name="pdfView"),
+    path('pdfDownload/<int:pk>/', utilitiesViews.DownloadPDF.as_view(), name="pdfDownload"),
 	
 	path('graph', graph.graph, name="graph"),
 
