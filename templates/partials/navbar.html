@@ -33,7 +33,7 @@
         {% if user.is_authenticated %}
         <li class="nav-item"><a href="{% url 'customer' pk=current.id %}"  class="nav-link">Customer</a></li>
         {% else %}
-        <li class="nav-item"><a href="#"  class="nav-link">Login</a></li>
+        <li class="nav-item"><a href="{% url 'login' %}"  class="nav-link">Login</a></li>
         {% endif %}
         {% if request.user.is_staff %}
         <li class="nav-item"><a href="{% url 'graph'  %}"  class="nav-link">Data</a></li>

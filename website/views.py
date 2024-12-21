@@ -1,4 +1,6 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, logout, login
+from .forms import CustomLoginForm
 from django.contrib.auth.forms import UserCreationForm
 from datetime import datetime, timedelta, date
 from django.shortcuts import render, redirect, get_object_or_404
@@ -11,8 +13,11 @@ from .models import *
 from .forms import *
 from django.core import serializers
 import stripe
-from django.contrib.auth.decorators import login_required
 import itertools 
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
 
 stripe.api_key = ''#set this in console
 
@@ -46,25 +51,48 @@ def home(request):
     return render(request,'home.html', context)
 
 
+
+def login_page(request):
+    if request.method == 'POST':
+        form = CustomLoginForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')  # Redirect after successful login
+            else:
+                messages.error(request, 'Invalid username or password.')
+        else:
+            messages.error(request, 'Invalid form submission.')
+
+    else:
+        form = CustomLoginForm()
+
+    return render(request, 'auth/login.html', {'form': form})
+
 def registerPage(request):
-    current = request.user
+    # Initialize the form
     forms = createUserForm()
+
     if request.method == 'POST':
         forms = createUserForm(request.POST)
         if forms.is_valid():
+            # Save the user if the form is valid
             forms.save()
             user = forms.cleaned_data.get('username')
-
-            messages.success(request, 'Account was created for' + user +', log in' )
-            return redirect('home')
-
-
             
-    context={
-        'forms'     :forms,
-        'current'   :current
-         }
-    return render(request,'register.html', context)
+            # Add a success message and redirect to the login page
+            messages.success(request, f'Account was created for {user}, you can now log in!')
+            return redirect('login')  # Make sure you have a URL for 'login'
+
+    # Render the registration page with the form
+    context = {
+        'form': forms
+    }
+    return render(request, 'auth/register.html', context)
 
 
 @login_required(login_url='home.html')
