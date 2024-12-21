@@ -23,7 +23,8 @@ def home(request):
     carLatest       = Car.objects.all()[4:7]
     carLatestSecond = Car.objects.all()[7:10]
     current  = request.user
-    
+    featured_vehicles = Car.objects.all()[:6]  # Adjust the limit as needed
+
     year = Year.objects.all()
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -34,7 +35,9 @@ def home(request):
             return redirect('home')
     
 
-    context={'cars':cars,
+    context={
+    'cars':cars,
+    'featured_vehicles': featured_vehicles,
     'year':year,
     'carLatest':carLatest,
     'carLatestSecond':carLatestSecond,
@@ -100,6 +103,8 @@ def loadForm(request):
 
 def carPage(request,pk):
     carpage = get_object_or_404(Car, id=pk)
+    current = request.user
+    related_cars = carpage.get_related_cars()
     
     if request.method == 'POST':
         form = ContactMessageForm(request.POST)
@@ -107,12 +112,14 @@ def carPage(request,pk):
             contact_message = form.save(commit=False)
             contact_message.car = carpage
             contact_message.save()
-            return render(request, 'car.html', {'carpage': carpage, 'form': ContactMessageForm(), 'success': True})
+            return render(request, 'car.html', {'carpage': carpage, 'current':current, 'form': ContactMessageForm(), 'success': True})
     else:
         form = ContactMessageForm()
+        
+    context = {'carpage':carpage,'current':current, 'form':form,'related_cars': related_cars, }
     
-    return render(request, 'car.html', {'carpage': carpage, 'form': form})
-
+    return render(request, 'car.html', context)
+    
 
 @login_required(login_url='home.html')
 def customerPage(request,pk):
@@ -275,22 +282,48 @@ def cancelOrder(request,pk):
     return redirect ('home')
 
 
+# def gallery(request):
+#     picList = ['car1', 'car3', 'car5']
+#     pictureList = []
+
+#     for x in picList:
+#         photo = Car.objects.values_list(x, flat=True)  # Use `flat=True` to simplify list structure
+#         pictureList.extend(photo)
+
+#     # Filter out None values and reverse the order
+#     data = list(filter(None, pictureList))[::-1]
+
+#     # Define a default `current` object (e.g., the first Car object or another logic)
+#     current = Car.objects.first()  # Replace `.first()` with your desired logic to fetch the `current` car
+
+#     context = {
+#         'data': data,
+#         'current': current,  # Pass `current` to the template
+#     }
+#     return render ( request, 'gallery.html', context)
+from django.core.paginator import Paginator, Page
+
 def gallery(request):
-    picList = ['car1', 'car3', 'car5']
-    pictureList = []
-
-    for x in picList:
-        photo = Car.objects.values_list(x, flat=True)  # Use `flat=True` to simplify list structure
-        pictureList.extend(photo)
-
-    # Filter out None values and reverse the order
-    data = list(filter(None, pictureList))[::-1]
-
-    # Define a default `current` object (e.g., the first Car object or another logic)
-    current = Car.objects.first()  # Replace `.first()` with your desired logic to fetch the `current` car
-
+    cars = Car.objects.all()  # Ambil semua mobil
+    page_number = request.GET.get('page', 1)
+    
+    # Menambahkan pagination jika diperlukan
+    paginator = Paginator(cars, 6)  # Menampilkan 6 mobil per halaman
+    page_obj = paginator.get_page(page_number)
+    
     context = {
-        'data': data,
-        'current': current,  # Pass `current` to the template
+        'cars': page_obj,  # Kirimkan objek mobil dengan pagination
     }
-    return render ( request, 'gallery.html', context)
+    return render(request, 'gallery.html', context)
+
+def contact(request):
+    return render(request, 'contact.html')
+
+def blog(request):
+    return render(request, 'blog.html')
+def price(request):
+    return render(request, 'price.html')
+def about(request):
+    return render(request, 'about.html')
+def services(request):
+    return render(request, 'services.html')

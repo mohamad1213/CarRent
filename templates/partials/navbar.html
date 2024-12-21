@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home'  %}">Car<span>Book</span></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="oi oi-menu"></span> Menu
+    </button>
+
+    <div class="collapse navbar-collapse" id="ftco-nav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+          <a href="{% url 'home' %}" class="nav-link">Home</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
+          <a href="{% url 'about' %}" class="nav-link">About</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'services' %}active{% endif %}">
+          <a href="{% url 'services' %}" class="nav-link">Services</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'price' %}active{% endif %}">
+          <a href="{% url 'price' %}" class="nav-link">Pricing</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'gallery' %}active{% endif %}">
+          <a href="{% url 'gallery' %}" class="nav-link">Cars</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'blog' %}active{% endif %}">
+          <a href="{% url 'blog' %}" class="nav-link">Blog</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">
+          <a href="{% url 'contact' %}" class="nav-link">Contact</a>
+      </li>
+      
+        {% if user.is_authenticated %}
+        <li class="nav-item"><a href="{% url 'customer' pk=current.id %}"  class="nav-link">Customer</a></li>
+        {% else %}
+        <li class="nav-item"><a href="#"  class="nav-link">Login</a></li>
+        {% endif %}
+        {% if request.user.is_staff %}
+        <li class="nav-item"><a href="{% url 'graph'  %}"  class="nav-link">Data</a></li>
+        {%endif%}
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- END nav -->

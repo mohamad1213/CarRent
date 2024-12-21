@@ -28,7 +28,9 @@ class Car(models.Model):
     car3 = models.ImageField(null=True, blank=True)
     car4 = models.ImageField(null=True, blank=True)
     car5 = models.ImageField(null=True, blank=True)
-    
+    def get_related_cars(self):
+        # Fetch related cars based on the same brand (marka)
+        return Car.objects.filter(marka=self.marka).exclude(id=self.id)
     
     
     def __str__(self):

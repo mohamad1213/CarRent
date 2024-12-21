@@ -8,8 +8,13 @@ urlpatterns = [
 	path('', views.home, name='home'),
 	path('loadForm/', views.loadForm, name='ajax_load'),
     path('infoGenerated/', views.loadData, name='infoGenerated'),
+	path('carinfo/',views.gallery, name='gallery'),
 	path('carinfo/<int:pk>/',views.carPage, name='carPage'),
-	path('gallery',views.gallery, name='gallery'),
+	path('contact/',views.contact, name='contact'),
+	path('blog/',views.blog, name='blog'),
+	path('price/',views.price, name='price'),
+	path('about/',views.about, name='about'),
+	path('services/',views.services, name='services'),
 
 
 	path('register/', views.registerPage, name='register'),
